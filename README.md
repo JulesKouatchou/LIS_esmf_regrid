@@ -26,11 +26,11 @@ Three files were changed:
 - **LIS_readConfig.F90**: Added code statements to check if ESMF regridding is selected in the configuration file. This allows to set do_esmfRegridding which default value is .FALSE.. 
 - **LIS_coreMod.F90**: Added the following variables in the lis_domain_type derived type:
 
-     type(ESMF_FieldBundle)     :: nldas2_bundle
-     type(ESMF_FieldBundle)     :: merra2_bundle
-     type(ESMF_FieldBundle)     :: gdas_bundle
-     type(ESMF_FieldBundle)     :: gdasT1534_bundle
-     type(ESMF_STAGGERLOC)      :: staggerloc
+      type(ESMF_FieldBundle)     :: nldas2_bundle
+      type(ESMF_FieldBundle)     :: merra2_bundle
+      type(ESMF_FieldBundle)     :: gdas_bundle
+      type(ESMF_FieldBundle)     :: gdasT1534_bundle
+      type(ESMF_STAGGERLOC)      :: staggerloc
 
 
 
