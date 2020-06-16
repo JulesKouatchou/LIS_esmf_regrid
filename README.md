@@ -1,6 +1,6 @@
 # ESMF Regridding in LIS
 
-This document decribes the code modifications made to introduce ESMF regridding in LIS. 
+This document decribes the code modifications made to introduce ESMF regridding in LIS. The goal is to regrid from forcing data into the model domain. Internally in LIS, the forcing data grid and the model domain grid are represented as one dimentional arrays. For this work, we will create new ESMF two-dimensional (2D) grids to facilitate the use of ESMF. The regridding process will then be performed on the two new grids before the regridded data are passed to the LIS model domain.
 
 ## General Description of Steps
 
@@ -9,10 +9,25 @@ The ESMF regridding implemented here is broken in two stages:
 - **Stage 1**: Generation of an interpolation weight matrix that describes how points in the source grid contribute to points in the destination grid. This is done through the creation of an ESMF routehandle.
 - **Stage 2**: Multiplication of values on the source grid by the interpolation weight matrix to produce values on the destination grid. 
 
+In ESMF, regridding is done at the level of the ESMF field (and alone ESMF bundle) level. We need
+
+**Options for Grid Types**
+
+In this work, we focue on 2D regular lat-lon grid and gaussian grid. We wrote a ESMF utility function that creates a ESMF rectilinear grid. The function takes as arguments (among other parameters) the longitude and latitude grid points that are predefined based on the type of grid.
 
 **Options for Regridding Methods**
 
-The ++lis.config++ file 
+The _lis.config_ file contains the setting:
+
+       Spatial interpolation method (met forcing):
+       
+ that determine the regridding method used to interpolate from the forcing data grid to the model grid. Its options are:
+ 
+       bilinear, neighbor, consevative
+       
+ We use the same setting to determine which ESMF regridding option to choose:
+ 
+       ESMF_REGRIDMETHOD_BILINEAR, ESMF_REGRIDMETHOD_NEAREST_STOD, ESMF_REGRIDMETHOD_CONSERVE
 
 ## New Directory: `esmf_regrid`
 This directory contains three Fortran modules:
@@ -75,7 +90,7 @@ I first added the following variables in the merra2_type_dec derived type:
 I then wrote the subroutines:
 
 - **set_list_merra2_fields**: Set the number of fields to be regridded and set a unique name of each of them.
-- **create_merra2_Forcing_ESMFbundle**: Create the MERRA2 forcing ESMF grid and bundle. This subroutine might be called several times depending on the integration date. Howver, it will be called once for any period when the MERRA2 forcing resolution does not change.
+- **create_merra2_Forcing_ESMFbundle**: Create the MERRA2 forcing ESMF grid and bundle. This subroutine might be called several times depending on the integration date. However, it will be called once for any period when the MERRA2 forcing resolution does not change. Before creating the ESMF forcing data grid, the subroutine computes the latitude and longitude grid points using the gobal forcing data domain parameters (lat-lon corners, total number of grid points in each dimension). 
 - **create_merra2_Model_ESMFbundle**: Create the model ESMF grid and ESMF bundle. This subroutine is called once as the model resolution does not change. To create the model ESMF grid, the longitude and latitude grid points are coming directly from the arrays LIS_domain(n)%glon and LIS_domain(n)%glat.
 - **create_merra2_ESMFroutehandle**: Determine the ESMF routehandle needed for thr regridding between the MERRA2 forcing and the model.
 
