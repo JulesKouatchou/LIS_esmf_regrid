@@ -42,7 +42,7 @@ The _lis.config_ file contains the setting:
  
        ESMF_REGRIDMETHOD_BILINEAR, ESMF_REGRIDMETHOD_NEAREST_STOD, ESMF_REGRIDMETHOD_CONSERVE
 
-**![Dynamic Masking](http://esmf-cu.colorado.edu/esmf_releases/last_built/ESMF_refdoc/node5.html#RH:DynMask)**
+**[Dynamic Masking](http://esmf-cu.colorado.edu/esmf_releases/last_built/ESMF_refdoc/node5.html#RH:DynMask)**
 
 Once a RouteHandle object is available, whether it was created with or without static masking, the associated regrid operation can further be masking during RouteHandle execution . This is called dynamic masking, because it can dynamically change between subsequent RouteHandle executions. The RouteHandle itself remains unchange during this process. The dynamic masking information is processed on the fly as the RouteHandle is applied. We use such approach with the assumption that locations of missing values are not know in advance.
 
