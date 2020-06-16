@@ -12,7 +12,7 @@ The ESMF regridding implemented here is broken in two stages:
 
 **Options for Regridding Methods**
 
-The +lis.config+ file 
+The ++lis.config++ file 
 
 ## New Directory: `esmf_regrid`
 This directory contains three Fortran modules:
