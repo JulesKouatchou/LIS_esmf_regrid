@@ -45,6 +45,6 @@ I first added the following variables in the merra2_type_dec derived type:
 ## Selecting ESMF REgrid Option
 To use ESMF regridding, we only need the setting:
 
-        **Regridding Tool: "withESMF"** 
+  **Regridding Tool: "withESMF"** 
         
 in the configuration file at run time.
