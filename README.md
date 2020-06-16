@@ -3,6 +3,8 @@
 This document decribes the code modifications made to introduce ESMF regridding in LIS.
 
 
+
+
 ## New Directory: `esmf_regrid`
 This directory contains three Fortran modules:
 
@@ -15,6 +17,22 @@ The LIS_create_gridMod.F90 file has a ESMF utility function that creates a recti
 It takes as arguments (among others) the latitude and longitude grid points. 
 This function can be used for both an ESMF uniform grid and an ESMF rectilinear grid. 
 Its applies for the regular lat/lon grid and the Gaussian grid.
+
+## Modifications in the core Directories
+
+Three files were changed:
+
+- **LIS_PRIV_rcMod.F90**: Added the logical variable do_esmfRegridding as member variable of the lisrcdec derived type.
+- **LIS_readConfig.F90**: Added code statements to check if ESMF regridding is selected in the configuration file. This allows to set do_esmfRegridding which default value is .FALSE.. 
+- **LIS_coreMod.F90**: Added the following variables in the lis_domain_type derived type:
+
+     type(ESMF_FieldBundle)     :: nldas2_bundle
+     type(ESMF_FieldBundle)     :: merra2_bundle
+     type(ESMF_FieldBundle)     :: gdas_bundle
+     type(ESMF_FieldBundle)     :: gdasT1534_bundle
+     type(ESMF_STAGGERLOC)      :: staggerloc
+
+
 
 ## Modifications in Met Fotcing Directories
 For this work, we implemented the ESMF regridding tool on the following met forcing:
