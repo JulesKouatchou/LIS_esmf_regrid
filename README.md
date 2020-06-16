@@ -9,11 +9,24 @@ The ESMF regridding implemented here is broken in two stages:
 - **Stage 1**: Generation of an interpolation weight matrix that describes how points in the source grid contribute to points in the destination grid. This is done through the creation of an ESMF routehandle.
 - **Stage 2**: Multiplication of values on the source grid by the interpolation weight matrix to produce values on the destination grid. 
 
-In ESMF, regridding is done at the level of the ESMF field (and alone ESMF bundle) level. We need
+Typically, ESMF regridding follows the steps:
+
+      Create the source ESMF grid
+      Create the source ESMF field
+      Create the destination ESMF grid
+      Create the destination ESMF field
+      Create the ESMF routehandle (call of ESMF_FieldRegridStore())
+      
+      Loop of the reading of the data
+              Read the source data
+              Populate the source ESMF field
+              Perform ESMF regridding (call of ESMF_FieldRegrid())
+
+In ESMF, regridding is done at the level of the ESMF field level or at the ESMF bundle level. We chose to use the field case (though we also implemented at the bundle option) because we assume that the locations of missing values are dynamics (not known in advance). Our task is then to define ESMF fields (on both the source and destination grids) for all the variables to be regridded. To simplify the implementation, we group the source (forcing data) and destination (model domain) fields into source ESMF bundle and model ESMF bundle respectively.
 
 **Options for Grid Types**
 
-In this work, we focue on 2D regular lat-lon grid and gaussian grid. We wrote a ESMF utility function that creates a ESMF rectilinear grid. The function takes as arguments (among other parameters) the longitude and latitude grid points that are predefined based on the type of grid.
+In this work, we focus on 2D regular lat-lon grid and gaussian grid. They can be seen as logically rectangular grids. We wrote a ESMF utility function that creates a ESMF rectilinear grid. The function takes as arguments (among other parameters) the longitude and latitude grid points that are predefined based on the type of grid.
 
 **Options for Regridding Methods**
 
@@ -28,6 +41,9 @@ The _lis.config_ file contains the setting:
  We use the same setting to determine which ESMF regridding option to choose:
  
        ESMF_REGRIDMETHOD_BILINEAR, ESMF_REGRIDMETHOD_NEAREST_STOD, ESMF_REGRIDMETHOD_CONSERVE
+
+**Dynamic Masking**
+
 
 ## New Directory: `esmf_regrid`
 This directory contains three Fortran modules:
@@ -58,7 +74,7 @@ Three files were changed:
 
 
 
-## Modifications in Met Fotcing Directories
+## Modifications in Met Focing Directories
 For this work, we implemented the ESMF regridding tool on the following met forcing:
 
 | Forcing Name | Forcing Grid Type | Model Grid Type |
@@ -164,7 +180,7 @@ I wrote a subroutine **performESMFregrid_merra2** that perform the ESMF regriddi
      ENDIF
 
 
-## Selecting ESMF REgrid Option
+## Selecting ESMF Regridding Option at Runtime
 To use ESMF regridding, we only need the setting:
 
   **Regridding Tool: "withESMF"** 
