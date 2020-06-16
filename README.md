@@ -1,9 +1,18 @@
 # ESMF Regridding in LIS
 
-This document decribes the code modifications made to introduce ESMF regridding in LIS.
+This document decribes the code modifications made to introduce ESMF regridding in LIS. 
+
+## General Description of Steps
+
+The ESMF regridding implemented here is broken in two stages:
+
+- **Stage 1**: Generation of an interpolation weight matrix that describes how points in the source grid contribute to points in the destination grid. This is done through the creation of an ESMF routehandle.
+- **Stage 2**: Multiplication of values on the source grid by the interpolation weight matrix to produce values on the destination grid. 
 
 
+**Options for Regridding Methods**
 
+The __lis.config__ file 
 
 ## New Directory: `esmf_regrid`
 This directory contains three Fortran modules:
