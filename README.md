@@ -6,7 +6,7 @@ This document decribes the code modifications made to introduce ESMF regridding 
 
 The ESMF regridding implemented here is broken in two stages:
 
-- **Stage 1**: Generation of an interpolation weight matrix that describes how points in the source grid contribute to points in the destination grid. This is done through the creation of an ESMF routehandle.
+- **Stage 1**: Generation of an interpolation weight matrix that describes how points in the source grid contribute to points in the destination grid. This is done through the creation of an ESMF RouteHandle.
 - **Stage 2**: Multiplication of values on the source grid by the interpolation weight matrix to produce values on the destination grid. 
 
 Typically, ESMF regridding follows the steps:
@@ -15,7 +15,7 @@ Typically, ESMF regridding follows the steps:
       Create the source ESMF field
       Create the destination ESMF grid
       Create the destination ESMF field
-      Create the ESMF routehandle (call of ESMF_FieldRegridStore())
+      Create the ESMF RouteHandle (call of ESMF_FieldRegridStore())
       
       Loop of the reading of the data
               Read the source data
@@ -42,7 +42,8 @@ The _lis.config_ file contains the setting:
  
        ESMF_REGRIDMETHOD_BILINEAR, ESMF_REGRIDMETHOD_NEAREST_STOD, ESMF_REGRIDMETHOD_CONSERVE
 
-**Dynamic Masking**
+**![Dynamic Masking](http://esmf-cu.colorado.edu/esmf_releases/last_built/ESMF_refdoc/node5.html#RH:DynMask)**
+Once a RouteHandle object is available, whether it was created with or without static masking, the associated regrid operation can further be masking during RouteHandle execution . This is called dynamic masking, because it can dynamically change between subsequent RouteHandle executions. The RouteHandle itself remains unchange during this process. The dynamic masking information is processed on the fly as the RouteHandle is applied.
 
 
 ## New Directory: `esmf_regrid`
@@ -50,7 +51,7 @@ This directory contains three Fortran modules:
 
 - **LIS_create_gridMod.F90**: utility functions for creating ESMF grids
 - **LIS_field_bundleMod.F90**: utility subroutine for manipulating ESMF bundles
-- **LIS_ESMF_Regrid_Utils.F90**: utility subroutines for creating the ESMF routehandle, performing regridding operations (at the level of ESMF field or ESMF bundle)
+- **LIS_ESMF_Regrid_Utils.F90**: utility subroutines for creating the ESMF RouteHandle, performing regridding operations (at the level of ESMF field or ESMF bundle)
 
 ESMF supports three main types of grids: uniform, rectilinear, and curvilinear. 
 The LIS_create_gridMod.F90 file has a ESMF utility function that creates a rectilinear grid. 
@@ -108,7 +109,7 @@ I then wrote the subroutines:
 - **set_list_merra2_fields**: Set the number of fields to be regridded and set a unique name of each of them.
 - **create_merra2_Forcing_ESMFbundle**: Create the MERRA2 forcing ESMF grid and bundle. This subroutine might be called several times depending on the integration date. However, it will be called once for any period when the MERRA2 forcing resolution does not change. Before creating the ESMF forcing data grid, the subroutine computes the latitude and longitude grid points using the gobal forcing data domain parameters (lat-lon corners, total number of grid points in each dimension). 
 - **create_merra2_Model_ESMFbundle**: Create the model ESMF grid and ESMF bundle. This subroutine is called once as the model resolution does not change. To create the model ESMF grid, the longitude and latitude grid points are coming directly from the arrays LIS_domain(n)%glon and LIS_domain(n)%glat.
-- **create_merra2_ESMFroutehandle**: Determine the ESMF routehandle needed for thr regridding between the MERRA2 forcing and the model.
+- **create_merra2_ESMFroutehandle**: Determine the ESMF RouteHandle needed for thr regridding between the MERRA2 forcing and the model.
 
 In the subroutine **init_merra2**, included the lines:
 
