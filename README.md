@@ -26,6 +26,12 @@ In ESMF, regridding is done at the level of the ESMF field level or at the ESMF 
 
 **Options for Grid Types**
 
+ESMF supports three <a href="https://www.dkrz.de/up/services/analysis/visualization/sw/ncl/docs/ncl-regridding-with-esmf?lang=en">types of grids</a>:
+
+- Rectilinear grid: A 2-dimensional rectilinear grid have parallel grid axes, the x-axis values are monotonic increasing and perpendicular to the monotonic-increasing y-axis values. The x- and y-axis coordinates are 1-dimensional x(I) and y(I).
+- Curvilinear grid: A curvilinear grid is characterized by curved coordinate lines. The x- and y-axis coordinates are 2-dimensional x(i,j) and y(i,j).
+- Unstructured grid: An unstructured or irregular grid can have shapes such as triangle or tetrahedral in an irregular pattern defined by latitude and longitude vertices and the number of vertices for each cell. It also can represent irregular distributed points (point(x,y)). 
+
 In this work, we focus on 2D regular lat-lon grid and gaussian grid. They can be seen as logically rectangular grids. We wrote a ESMF utility function that creates a ESMF rectilinear grid. The function takes as arguments (among other parameters) the longitude and latitude grid points that are predefined based on the type of grid.
 
 **Options for Regridding Methods**
@@ -40,7 +46,9 @@ The _lis.config_ file contains the setting:
        
  We use the same setting to determine which ESMF regridding option to choose:
  
-       ESMF_REGRIDMETHOD_BILINEAR, ESMF_REGRIDMETHOD_NEAREST_STOD, ESMF_REGRIDMETHOD_CONSERVE
+       - `ESMF_REGRIDMETHOD_BILINEAR`: Destination value is a linear combination of the source values in the cell which contains the destination point. The weights for the linear combination are based on the distance of destination point from each source value.
+       - `ESMF_REGRIDMETHOD_NEAREST_STOD`: Each destination point is mapped to the closest source point. A given source point may go to multiple destination points, but no destination point will receive input from more than one source point.
+       - `ESMF_REGRIDMETHOD_CONSERVE`: The main purpose of this method is to preserve the integral of the field between the source and destination. The value of a destination cell is calculated as the weighted sum of the values of the source cells that it overlaps. The weights are determined by the amount the source cell overlaps the destination cell. Needs corner coordinate values to be provided in the Grid. 
 
 **[Dynamic Masking](http://esmf-cu.colorado.edu/esmf_releases/last_built/ESMF_refdoc/node5.html#RH:DynMask)**
 
