@@ -46,9 +46,9 @@ The _lis.config_ file contains the setting:
        
  We use the same setting to determine which ESMF regridding option to choose:
  
-       - `ESMF_REGRIDMETHOD_BILINEAR`: Destination value is a linear combination of the source values in the cell which contains the destination point. The weights for the linear combination are based on the distance of destination point from each source value.
-       - `ESMF_REGRIDMETHOD_NEAREST_STOD`: Each destination point is mapped to the closest source point. A given source point may go to multiple destination points, but no destination point will receive input from more than one source point.
-       - `ESMF_REGRIDMETHOD_CONSERVE`: The main purpose of this method is to preserve the integral of the field between the source and destination. The value of a destination cell is calculated as the weighted sum of the values of the source cells that it overlaps. The weights are determined by the amount the source cell overlaps the destination cell. Needs corner coordinate values to be provided in the Grid. 
+- `ESMF_REGRIDMETHOD_BILINEAR`: Destination value is a linear combination of the source values in the cell which contains the destination point. The weights for the linear combination are based on the distance of destination point from each source value.
+- `ESMF_REGRIDMETHOD_NEAREST_STOD`: Each destination point is mapped to the closest source point. A given source point may go to multiple destination points, but no destination point will receive input from more than one source point.
+- `ESMF_REGRIDMETHOD_CONSERVE`: The main purpose of this method is to preserve the integral of the field between the source and destination. The value of a destination cell is calculated as the weighted sum of the values of the source cells that it overlaps. The weights are determined by the amount the source cell overlaps the destination cell. Needs corner coordinate values to be provided in the Grid. 
 
 **[Dynamic Masking](http://esmf-cu.colorado.edu/esmf_releases/last_built/ESMF_refdoc/node5.html#RH:DynMask)**
 
