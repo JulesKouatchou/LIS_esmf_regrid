@@ -32,7 +32,7 @@ ESMF supports three <a href="https://www.dkrz.de/up/services/analysis/visualizat
 - Curvilinear grid: A curvilinear grid is characterized by curved coordinate lines. The x- and y-axis coordinates are 2-dimensional x(i,j) and y(i,j).
 - Unstructured grid: An unstructured or irregular grid can have shapes such as triangle or tetrahedral in an irregular pattern defined by latitude and longitude vertices and the number of vertices for each cell. It also can represent irregular distributed points (point(x,y)). 
 
-[fig_grid](https://slideplayer.com/slide/4799757/15/images/32/Grid+Types+Structured+Grids%3A+rectilinear+curvilinear+uniform+regular.jpg)
+![fig_grid](https://slideplayer.com/slide/4799757/15/images/32/Grid+Types+Structured+Grids%3A+rectilinear+curvilinear+uniform+regular.jpg)
 
 In this work, we focus on 2D regular lat-lon grid and gaussian grid. They can be seen as logically rectangular grids. We wrote a ESMF utility function that creates a ESMF rectilinear grid. The function takes as arguments (among other parameters) the longitude and latitude grid points that are predefined based on the type of grid.
 
