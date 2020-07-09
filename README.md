@@ -206,6 +206,6 @@ With the GDAS forcing data, the resulotion of the dataset changes over time. It 
 ## Selecting ESMF Regridding Option at Runtime
 To use ESMF regridding, we only need the setting:
 
-    **Regridding Tool: "withESMF"** 
+   **Regridding Tool: "withESMF"** 
         
 in the configuration file at run time.
