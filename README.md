@@ -22,7 +22,7 @@ Typically, ESMF regridding follows the steps:
               Populate the source ESMF field
               Perform ESMF regridding (call of ESMF_FieldRegrid())
 
-In ESMF, regridding is done at the level of the ESMF field level or at the ESMF bundle level. We chose to use the field case (though we also implemented at the bundle option) because we assume that the locations of missing values are dynamics (not known in advance). Our task is then to define ESMF fields (on both the source and destination grids) for all the variables to be regridded. To simplify the implementation, we group the source (forcing data) and destination (model domain) fields into source ESMF bundle and model ESMF bundle respectively.
+In ESMF, regridding is done at the ESMF field level or at the ESMF bundle level. We chose to use the field case (though we also implemented the bundle option) because we assume that the locations of missing values are dynamics (not known in advance). Our task is then to define ESMF fields (on both the source and destination grids) for all the variables to be regridded. To simplify the implementation, we group the source (forcing data) and destination (model domain) fields into source ESMF bundle and model ESMF bundle respectively. The ESMF bundles are place holders to easily move data around. 
 
 **Options for Grid Types**
 
@@ -35,6 +35,12 @@ ESMF supports three <a href="https://www.dkrz.de/up/services/analysis/visualizat
 ![fig_grid](https://slideplayer.com/slide/4799757/15/images/32/Grid+Types+Structured+Grids%3A+rectilinear+curvilinear+uniform+regular.jpg)
 
 In this work, we focus on 2D regular lat-lon grid and gaussian grid. They can be seen as logically rectangular grids. We wrote a ESMF utility function that creates a ESMF rectilinear grid. The function takes as arguments (among other parameters) the longitude and latitude grid points that are predefined based on the type of grid.
+
+In the process of creating the grid, it is important to indicate the coordinate system to use. It is used to indicate to other users the type of the coordinates, and also to control how the coordinates are interpreted in regridding methods. Three options are available:
+
+   - `ESMF_COORDSYS_CART`: Cartesian coordinate system. The Cartesian coordinates are mapped to the grid coordinate dimensions in the following order: x, y, z.
+   - `ESMF_COORDSYS_SPH_DEG`: Spherical coordinates in degrees. The spherical coordinates are mapped to the grid coordinate dimensions in the following order: longitude, latitude, radius. This is the option we will use here.
+   - `ESMF_COORDSYS_SPH_RAD`: Spherical coordinates in radians. The spherical coordinates are mapped to the grid coordinate dimensions in the following order: longitude, latitude, radius.
 
 **Options for Regridding Methods**
 
@@ -68,9 +74,9 @@ ESMF supports three main types of grids: uniform, rectilinear, and curvilinear.
 The LIS_create_gridMod.F90 file has a ESMF utility function that creates a rectilinear grid. 
 It takes as arguments (among others) the latitude and longitude grid points. 
 This function can be used for both an ESMF uniform grid and an ESMF rectilinear grid. 
-Its applies for the regular lat/lon grid and the Gaussian grid.
+It applies for the regular lat/lon grid and the Gaussian grid.
 
-## Modifications in the core Directories
+## Modifications in the `core` Directory
 
 Three files were changed:
 
@@ -78,15 +84,17 @@ Three files were changed:
 - **LIS_readConfig.F90**: Added code statements to check if ESMF regridding is selected in the configuration file. This allows to set do_esmfRegridding which default value is .FALSE.. 
 - **LIS_coreMod.F90**: Added the following variables in the lis_domain_type derived type:
 
-      type(ESMF_FieldBundle)     :: nldas2_bundle
-      type(ESMF_FieldBundle)     :: merra2_bundle
-      type(ESMF_FieldBundle)     :: gdas_bundle
-      type(ESMF_FieldBundle)     :: gdasT1534_bundle
-      type(ESMF_STAGGERLOC)      :: staggerloc
+      type(ESMF_FieldBundle)     :: nldas2_bundle       ! model bundle for NLDAS2 fields
+      type(ESMF_FieldBundle)     :: merra2_bundle       ! model bundle for MERRA2 fields
+      type(ESMF_FieldBundle)     :: gdas_bundle         ! model bundle for GDAS   fields
+      type(ESMF_FieldBundle)     :: gdasT1534_bundle    ! model bundle for GDA T1534 fields
+      type(ESMF_STAGGERLOC)      :: staggerloc          ! mode
+      type(ESMF_CoordSys_Flag)   :: coordSys            ! coordinate system of the model grid
+
+The above variables are set in the forcing data subroutine performing initializations.  
 
 
-
-## Modifications in Met Focing Directories
+## Modifications in Met Forcing Directories
 For this work, we implemented the ESMF regridding tool on the following met forcing:
 
 | Forcing Name | Forcing Grid Type | Model Grid Type |
@@ -107,7 +115,8 @@ I first added the following variables in the merra2_type_dec derived type:
      type(ESMF_TypeKind_Flag)     :: type_kind = ESMF_TYPEKIND_R4
      type(ESMF_STAGGERLOC)        :: staggerloc
      type(ESMF_RegridMethod_Flag) :: regridMethod
-     real                         :: undefined_value 
+     type(ESMF_CoordSys_Flag)     :: coordSys
+     real                         :: undefined_value
  
  In addition, I included the following module variables:
  
@@ -191,6 +200,8 @@ I wrote a subroutine **performESMFregrid_merra2** that perform the ESMF regriddi
         call interp_merra2_var(n,findex,month,ps,    7, .false., merraforc)
      ENDIF
 
+## GDAS Special Case##
+With the GDAS forcing data, the resulotion of the dataset changes over time. It is possible that for the same experiment, GDAS data will have various resolutions. The GDAS ESMF bundle and grid are therefore not created during intializations but each time there is a new set of data. The model ESMF bundle and grid are still created once at the initialization stage.
 
 ## Selecting ESMF Regridding Option at Runtime
 To use ESMF regridding, we only need the setting:
