@@ -34,7 +34,7 @@ ESMF supports three <a href="https://www.dkrz.de/up/services/analysis/visualizat
 
 ![fig_grid](https://slideplayer.com/slide/4799757/15/images/32/Grid+Types+Structured+Grids%3A+rectilinear+curvilinear+uniform+regular.jpg)
 
-In this work, we focus on 2D regular lat-lon grid and gaussian grid. They can be seen as logically rectangular grids. We wrote a ESMF utility function that creates a ESMF rectilinear grid. The function takes as arguments (among other parameters) the longitude and latitude grid points that are predefined based on the type of grid.
+In this work, we focus on 2D regular lat-lon grid and gaussian grid. They can be seen as logically rectangular grids. We wrote a ESMF utility function that creates a ESMF rectilinear grid. The function takes as arguments (among other parameters) the longitude and latitude grid points at centers (that are predefined based on the type of grid) and at corners. We wrote routines that determines the grid points at corners based on the ones at centers.
 
 In the process of creating the grid, it is important to indicate the coordinate system to use. It is used to indicate to other users the type of the coordinates, and also to control how the coordinates are interpreted in regridding methods. Three options are available:
 
@@ -50,13 +50,20 @@ The _lis.config_ file contains the setting:
        
  that determine the regridding method used to interpolate from the forcing data grid to the model grid. Its options are:
  
-       bilinear, neighbor, consevative
+       bilinear, neighbor, budget-bilinear (for consevative)
        
  We use the same setting to determine which ESMF regridding option to choose:
  
 - `ESMF_REGRIDMETHOD_BILINEAR`: Destination value is a linear combination of the source values in the cell which contains the destination point. The weights for the linear combination are based on the distance of destination point from each source value.
 - `ESMF_REGRIDMETHOD_NEAREST_STOD`: Each destination point is mapped to the closest source point. A given source point may go to multiple destination points, but no destination point will receive input from more than one source point.
 - `ESMF_REGRIDMETHOD_CONSERVE`: The main purpose of this method is to preserve the integral of the field between the source and destination. The value of a destination cell is calculated as the weighted sum of the values of the source cells that it overlaps. The weights are determined by the amount the source cell overlaps the destination cell. Needs corner coordinate values to be provided in the Grid. 
+
+Depending on the regridding method considered, the tool will use one of the two lines types:
+
+- `ESMF_LINETYPE_CART`: Specifies that the line between two points follows a straight path through the 3D Cartesian space in which the sphere is embedded. Distances are measured along this 3D Cartesian line. We can only use the bilinear and nearest neighbor methods here.
+- `ESMF_LINETYPE_GREAT_CIRCLE`: Specifies that the line between two points follows a great circle path (the shortest path between two points on a sphere) along the sphere surface. We can only use the bilinear and conservative methods here.
+
+
 
 **[Dynamic Masking](http://esmf-cu.colorado.edu/esmf_releases/last_built/ESMF_refdoc/node5.html#RH:DynMask)**
 
