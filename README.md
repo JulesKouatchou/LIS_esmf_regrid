@@ -68,12 +68,14 @@ We wrote a configuarable standalone code that performs the regridding of two syn
 
 | | Nearest neighbor | Bilinear | Conservative |
 | --- | --- | --- | --- |
-| lat-lon to lat-lon (nldas2, merra2)| ESMF_COORDSYS_CART | ESMF_COORDSYS_CART | ESMF_COORDSYS_SPH_DEG |
-|                    | ESMF_LINETYPE_CART | ESMF_LINETYPE_CART | ESMF_LINETYPE_GREAT_CIRCLE |
-| Gaussian to lat-lon (gdas) | ESMF_COORDSYS_CART | ESMF_COORDSYS_SPH_DEG | ESMF_COORDSYS_SPH_DEG |
-|                    | ESMF_LINETYPE_CART | ESMF_LINETYPE_GREAT_CIRCLE | ESMF_LINETYPE_GREAT_CIRCLE |
-| Gaussian to Gaussian (gdasT1534) | ESMF_COORDSYS_CART |  ?        | ? |
-|                      | ESMF_LINETYPE_CART |   ?        | ?  |
+| **lat-lon to lat-lon** | ESMF_COORDSYS_CART | ESMF_COORDSYS_CART | ESMF_COORDSYS_SPH_DEG |
+|  (nldas2, merra2)      | ESMF_LINETYPE_CART | ESMF_LINETYPE_CART | ESMF_LINETYPE_GREAT_CIRCLE |
+| **Gaussian to lat-lon**  | ESMF_COORDSYS_CART | ESMF_COORDSYS_SPH_DEG | ESMF_COORDSYS_SPH_DEG |
+|    (gdas)               | ESMF_LINETYPE_CART | ESMF_LINETYPE_GREAT_CIRCLE | ESMF_LINETYPE_GREAT_CIRCLE |
+| **Gaussian to Gaussian** | ESMF_COORDSYS_CART |  ?        | ? |
+|    (gdasT1534)       | ESMF_LINETYPE_CART |   ?        | ?  |
+
+The above table gives us some guidelines on what type of grids we need to create as  function of the regridding method selected. In LIS, when the "budget-bilinear" regridding method is seleected, one set of fields is regridded using the bilinear method and another one using the conservative method. This causes us a challenge when the `nldas2` and `merra2` forcing data are used. In such a case, we might need to create two ESMF grids and compute two sets of weights in order to handle the two regridding methods.
 
 **[Dynamic Masking](http://esmf-cu.colorado.edu/esmf_releases/last_built/ESMF_refdoc/node5.html#RH:DynMask)**
 
