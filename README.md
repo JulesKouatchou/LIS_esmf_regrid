@@ -64,6 +64,16 @@ Depending on the regridding method considered, the tool will use one of the two 
 - `ESMF_LINETYPE_GREAT_CIRCLE`: Specifies that the line between two points follows a great circle path (the shortest path between two points on a sphere) along the sphere surface. We can only use the bilinear and conservative methods here.
 
 
+We wrote a configuarable standalone code that performs the regridding of two synthetic fields. The source and destination fields can be either on the Gaussian or lat/lon grid. We observed that the settings (coordinate system and line type) on the table below were best (in terms of meeting the regridding accuracy) to carry out regridding:
+
+| | Nearest neighbor | Bilinear | Conservative |
+| --- | --- | --- | --- |
+| lat-lon to lat-lon | ESMF_COORDSYS_CART | ESMF_COORDSYS_CART | ESMF_COORDSYS_SPH_DEG |
+|                    | ESMF_LINETYPE_CART | ESMF_LINETYPE_CART | ESMF_LINETYPE_GREAT_CIRCLE |
+| Gaussian to lat-lon | ESMF_COORDSYS_CART | ESMF_COORDSYS_SPH_DEG | ESMF_COORDSYS_SPH_DEG |
+|                    | ESMF_LINETYPE_CART | ESMF_LINETYPE_GREAT_CIRCLE | ESMF_LINETYPE_GREAT_CIRCLE |
+| Gaussian to Gaussian | ESMF_COORDSYS_CART |  ?        | ? |
+|                      | ESMF_LINETYPE_CART |   ?        | ?  |
 
 **[Dynamic Masking](http://esmf-cu.colorado.edu/esmf_releases/last_built/ESMF_refdoc/node5.html#RH:DynMask)**
 
