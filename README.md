@@ -236,4 +236,4 @@ We use as reference the results obtained using the original version of the LIS c
 | nldas2    | Good (default) | N/A            | N/A |
 | merra2    | issue with `Wind_f_tavg` | Good (default) |  issue with  `CRainf_f_tavg` and `Snow_f_tavg`  |
 | gdas      | Good           | Good (default) | Good but issue with `Rainf_f_inst` |
-| gdasT1543 | Good (default) |                |     |
+| gdasT1543 | Good (default) |  issue with  `Rainf_f_inst` and `SWdown_f_inst`      |     |
