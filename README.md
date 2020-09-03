@@ -237,3 +237,38 @@ We use as reference the results obtained using the original version of the LIS c
 | merra2    | issue with `Wind_f_tavg` | Good (default) |  issue with  `CRainf_f_tavg` and `Snow_f_tavg`  |
 | gdas      | Good           | Good (default) | Good but issue with `Rainf_f_inst` |
 | gdasT1543 | Good (default) |  issue with  `Rainf_f_inst` and `SWdown_f_inst`      |     |
+
+## Obtaining the Code
+
+The code is in a local Git repository on `discover` and can be obtained using the command:
+
+       git clone /discover/nobackup/jkouatch/LIS_PROJECT/sourceCode/LISF
+       
+The following files were modified:
+
+      make/plugins.py
+      core/LIS_readConfig.F90
+      core/LIS_coreMod.F90
+      metforcing/gdas/get_gdas.F90
+      metforcing/gdas/gdas_forcingMod.F90
+      metforcing/gdas/read_gdas.F90
+      metforcing/gdasT1534/gdasT1534_forcingMod.F90
+      metforcing/gdasT1534/read_gdasT1534.F90
+      metforcing/merra2/merra2_forcingMod.F90
+      metforcing/merra2/read_merra2.F90
+      metforcing/nldas2/nldas2_forcingMod.F90
+      metforcing/nldas2/read_nldas2a.F90
+      
+A new directory, `esmf_regrid`, was created and it contains the files:
+
+      esmf_regrid/LIS_create_gridMod.F90
+      esmf_regrid/LIS_ESMF_Regrid_Utils.F90
+      esmf_regrid/LIS_field_bundleMod.F90
+      metforcing/nldas2/read_nldas2b.F90
+      
+      
+      
+
+
+
+
