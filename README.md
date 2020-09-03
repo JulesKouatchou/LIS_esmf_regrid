@@ -226,3 +226,14 @@ To use ESMF regridding, we only need the setting:
    **Regridding Tool: "withESMF"** 
         
 in the configuration file at run time.
+
+## Initial Tests
+We ran a series of of experiments (under various configurations) to test the efeectiveness of the ESMF regridding. All the model integrations are just for a couple of days and produced hourly outputs.
+We use as reference the results obtained using the original version of the LIS code and we plot a time series of the errors (absolute maximum, absolote mean and rms).
+
+|           | neighbor       | bilinear       | budget-bilinear |
+| ---       | ---            | ---            | --- |
+| nldas2    | Good (default) | N/A            | N/A |
+| merra2    | issue with `Wind_f_tavg` | Good (default) |  issue with  `CRainf_f_tavg` and `Snow_f_tavg`  |
+| gdas      | Good           | Good (default) | Good but issue with `Rainf_f_inst` |
+| gdasT1543 | Good (default) |                |     |
