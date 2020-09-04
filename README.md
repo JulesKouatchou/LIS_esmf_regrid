@@ -238,6 +238,18 @@ We use as reference the results obtained using the original version of the LIS c
 | gdas      | Good           | Good (default) | Good but issue with `Rainf_f_inst` |
 | gdasT1543 | Good (default) |  issue with  `Rainf_f_inst` and `SWdown_f_inst`      |     |
 
+|           |         | neighbor | bilinear | budget-bilinear |
+| ---       | ---     | ---      | ---      | --- |
+| nldas2 (4x4)| Regular | 43.49  |          |     |
+|           | ESMF    |   33.21  |          |     |
+| merra2 (1x2) | Regular | 126.33   | 104.56   | 105.11 |
+|           | ESMF    | 148.88   | 132.90   | 144.00 |
+| gdas (2x2) | Regular |  10.89 |  10.73   | 9.49 |
+|           | ESMF    |    4.01 |   4.54  |  8.96 |
+| gdasT1543 (4x4) | Regular | 2193.28 |          |      |
+|           | ESMF    | 2208.37 |          |      |
+
+
 ## Obtaining the Code
 
 The code is in a local Git repository on `discover` and can be obtained using the command:
